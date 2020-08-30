@@ -3,6 +3,7 @@ import fakeData from '../../fakeData';
 import './Shop.css';
 import Product from '../Product/Product';
 import Cart from '../Cart/Cart';
+import {addToDatabaseCart} from '../../utilities/databaseManager';
 const Shop = () => {
     const first10 = fakeData.slice(0, 10);
     const [products, setProducts] = useState(first10);
@@ -11,6 +12,9 @@ const Shop = () => {
     const addHandle = (product) => {
         const newCart = [...cart, product];
         setCart(newCart);
+        const same = newCart.filter(pd => pd.key === product.key);
+        const count = same.length;
+        addToDatabaseCart(product.key,count);
     }
 
     return (
@@ -18,6 +22,8 @@ const Shop = () => {
             <div className="product-container">
                 {
                     products.map(pd => <Product
+                        key={pd.key}
+                        addToCart={true}
                         product={pd}
                         addHandle={addHandle}>
                     </Product>)
