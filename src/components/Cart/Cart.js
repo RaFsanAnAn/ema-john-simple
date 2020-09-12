@@ -1,11 +1,15 @@
 import React from 'react';
-import './Cart.css'
-import { Link } from 'react-router-dom';
+
 
 const Cart = (props) => {
     const cart = props.cart;
-    const total = cart.reduce((total,prd) => total + prd.price ,0);
-
+    //console.log(cart);
+    //const total = cart.reduce( (total, prd) => total + prd.price , 0 )
+    let total = 0;
+    for(let i = 0; i< cart.length; i++){
+        const product = cart[i];
+        total = total + product.price * product.quantity;
+    }
     let shipping = 0;
     if(total > 35){
         shipping = 0;
@@ -13,23 +17,29 @@ const Cart = (props) => {
     else if(total > 15){
         shipping = 4.99;
     }
-    else if (total > 0){
-        shipping = 12.99;
+    else if(total > 0){
+        shipping = 12.99
     }
 
-    let tax = (total/10).toFixed(2);
-    let grandTotal = (total + shipping + Number(tax)).toFixed(2);
+    const tax = (total / 10).toFixed(2);
+    const grandTotal = (total + shipping + Number(tax)).toFixed(2);
+
+    const formatNumber = num => {
+        const precision = num.toFixed(2);
+        return Number(precision);
+    }
     return (
         <div>
-            <h2>Order summery </h2>
-            <p>Items ordered : {cart.length}</p>
-            <p>Product price : ${total.toFixed(2)}</p>
-            <p><small>Shipping cost : ${shipping}</small></p>
-            <p className = "text-primary"><small>Tax + VAT : ${tax}</small></p>
-            <p className = "totalPrice">Total price : ${grandTotal}</p>
-            <Link to = "/review">
-            <button className = "add-button">Review your order</button>
-            </Link>
+            <h4>Order Summary</h4>
+            <p>Items Ordered: {cart.length}</p>
+            <p>Product Price: {formatNumber(total)}</p>
+            <p><small>Shiiping Cost: {shipping}</small></p>
+            <p><small>Tax + VAT: {tax}</small></p>
+            <p>Total Price: {grandTotal}</p>
+            <br/>
+            {
+                props.children
+            }
         </div>
     );
 };
